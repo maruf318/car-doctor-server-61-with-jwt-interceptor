@@ -65,6 +65,16 @@ async function run() {
       const result = await bookingCheckoutCollection.insertOne(booking);
       res.send(result);
     });
+    app.put("/bookings/:id", async (req, res) => {
+      const updatedBooking = req.body;
+    });
+
+    app.delete("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookingCheckoutCollection.deleteOne(query);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
