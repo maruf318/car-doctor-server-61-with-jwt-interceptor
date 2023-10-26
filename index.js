@@ -27,6 +27,9 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const serviceCollection = client.db("carData").collection("services");
+    const bookingCheckoutCollection = client
+      .db("carData")
+      .collection("bookings");
 
     app.get("/services", async (req, res) => {
       const cursor = serviceCollection.find();
@@ -39,9 +42,16 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const options = {
         // Include only the `title` and `imdb` fields in the returned document
-        projection: { title: 1, price: 1, service_id: 1 },
+        projection: { title: 1, price: 1, service_id: 1, img: 1 },
       };
       const result = await serviceCollection.findOne(query, options);
+      res.send(result);
+    });
+
+    //bookings
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      const result = await bookingCheckoutCollection.insertOne(booking);
       res.send(result);
     });
 
