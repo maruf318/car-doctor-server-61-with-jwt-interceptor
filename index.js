@@ -12,8 +12,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://cars-doctor-e56c7.web.app",
-      "https://cars-doctor-e56c7.firebaseapp.com",
+      // "https://cars-doctor-e56c7.web.app",
+      // "https://cars-doctor-e56c7.firebaseapp.com",
     ],
     credentials: true,
   })
@@ -88,7 +88,22 @@ async function run() {
     });
     //services related api
     app.get("/services", async (req, res) => {
-      const cursor = serviceCollection.find();
+      const filter = req.query;
+      console.log(filter);
+      const query = {
+        title: { $regex: filter.search, $options: "i" },
+      };
+      //client side the input niye korte paro
+      // const query = {
+      //   price: { $lt: 200, $gt: 100 },
+      // };
+      const options = {
+        sort: {
+          price: filter.sort === "asc" ? 1 : -1,
+        },
+      };
+      console.log(filter.sort);
+      const cursor = serviceCollection.find(query, options);
       const result = await cursor.toArray();
       res.send(result);
     });
